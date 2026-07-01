@@ -1,0 +1,42 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Member {
+  id     String        @id @default(uuid())
+  name   String
+  role   String?
+  skills MemberSkill[]
+}
+
+model Skill {
+  id      String        @id @default(uuid())
+  name    String        @unique
+  members MemberSkill[]
+}
+
+model MemberSkill {
+  id       String @id @default(uuid())
+  member   Member @relation(fields: [memberId], references: [id])
+  memberId String
+  skill    Skill  @relation(fields: [skillId], references: [id])
+  skillId  String
+  @@unique([memberId, skillId])
+}
+
+model Project {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  status      String
+  startDate   DateTime?
+  endDate     DateTime?
+  techStack   String[]
+  members     String[]
+  createdAt   DateTime @default(now())
+}
